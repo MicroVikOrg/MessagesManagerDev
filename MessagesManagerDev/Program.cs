@@ -2,6 +2,7 @@ using Confluent.Kafka;
 using MessagesManagerDev.Models;
 using MessagesManagerDev.Services;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddSingleton<IProducer<Null, string>>(_ => new ProducerBuilder<
 builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
 #endregion
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(builder.Configuration["ConnectionString"]));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["RedisConnectionString"]!));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
